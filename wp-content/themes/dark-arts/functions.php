@@ -64,11 +64,11 @@ function setting_github() { ?>
 
 // Custom Post Type
 function create_my_custom_post() {
-	register_post_type( 'my-custom-post',
+	register_post_type( 'custom-post',
     array(
         'labels' => array(
-            'name' => __( 'My Custom Post' ),
-            'singular_name' => __( 'My Custom Post' ),
+            'name' => __( 'Custom Post' ),
+            'singular_name' => __( 'Custom Post' ),
         ),
         'public' => true,
         'has_archive' => true,
