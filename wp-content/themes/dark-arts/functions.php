@@ -19,6 +19,7 @@ add_action('wp_print_styles', 'darkarts_google_fonts');
 
 // WordPress Titles
 add_theme_support( 'title-tag' );
+
 // Support Featured Images
 add_theme_support( 'post-thumbnails' );
 
@@ -42,15 +43,6 @@ function custom_settings_page() { ?>
 	</div>
 <?php }
 
-function custom_settings_page_setup() {
-	add_settings_section( 'section', 'All Settings', null, 'theme-options' );
-	add_settings_field( 'twitter', 'Twitter URL', 'setting_twitter', 'theme-options', 'section' );
-    add_settings_field( 'github', 'Github URL', 'setting_github', 'theme-options', 'section' );
-
-	register_setting('section', 'twitter');
-    register_setting('section', 'github');
-}
-add_action( 'admin_init', 'custom_settings_page_setup' );
 
 // Twitter
 function setting_twitter() { ?>
@@ -62,22 +54,39 @@ function setting_github() { ?>
 	<input type="text" name="github" id="github" value="<?php echo get_option('github'); ?>" />
 <?php }
 
-// Custom Post Type
-function create_my_custom_post() {
-	register_post_type( 'custom-post',
-    array(
-        'labels' => array(
-            'name' => __( 'Custom Post' ),
-            'singular_name' => __( 'Custom Post' ),
-        ),
-        'public' => true,
-        'has_archive' => true,
-        'supports' => array(
-        'title',
-        'editor',
-        'thumbnail',
-        'custom-fields'
-		)
-	));
+function custom_settings_page_setup() {
+	add_settings_section( 'section', 'All Settings', null, 'theme-options' );
+	add_settings_field( 'twitter', 'Twitter URL', 'setting_twitter', 'theme-options', 'section' );
+    add_settings_field( 'github', 'Github URL', 'setting_github', 'theme-options', 'section' );
+
+	register_setting('section', 'twitter');
+    register_setting('section', 'github');
 }
-add_action( 'init', 'create_my_custom_post' );
+add_action( 'admin_init', 'custom_settings_page_setup' );
+
+// Custom Post Type
+function create_post_custom_post() {
+	register_post_type( 'my-custom-post',
+		array(
+			'labels'       => array(
+				'name' => __( 'Custom Post' ),
+			),
+			'public'       => true,
+			'hierarchical' => true,
+			'has_archive'  => true,
+			'supports'     => array(
+				'title',
+				'editor',
+				'excerpt',
+				'thumbnail',
+			),
+			'taxonomies'   => array(
+				'post_tag',
+				'category',
+			)
+		)
+	);
+	register_taxonomy_for_object_type( 'category', 'my-custom-post' );
+	register_taxonomy_for_object_type( 'post_tag', 'my-custom-post' );
+}
+add_action( 'init', 'create_post_custom_post' );
